@@ -1,4 +1,4 @@
-package interfaces;  //change this to match your project package
+package interfaces;
 
 public interface ISeat {
     int getRow();              //returns number of the row of the seat (0 = first row)
