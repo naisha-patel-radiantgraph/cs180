@@ -1,5 +1,6 @@
 package interfaces;
 
+import seat.Seat;
 import showtime.Showtime;
 import user.User;
 
