@@ -54,4 +54,6 @@ public interface IMovie {
      * @param path filesystem path or URL for poster image; may be null to clear the poster
      */
     void setPosterPath(String path);
+
+
 }

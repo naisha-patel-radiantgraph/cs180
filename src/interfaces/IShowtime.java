@@ -1,5 +1,8 @@
 package interfaces;
 
+import movie.Movie;
+import seat.Seat;
+
 import java.time.LocalDateTime;
 
 /**
@@ -17,7 +20,7 @@ import java.time.LocalDateTime;
  *   col 0..cols-1). Document any different convention in the implementor class.
  * - Implementations may throw IndexOutOfBoundsException for invalid row/col inputs.
  */
-public interface Showtime {
+public interface IShowtime {
 
     /**
      * Returns the Movie shown at this showtime.

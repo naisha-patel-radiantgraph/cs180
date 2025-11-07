@@ -23,7 +23,8 @@ public interface IDatabase {
     Showtime findShowtime(Movie m, LocalDateTime dt); // Finds a showtime for given movie and time
     List<Showtime> getShowtimes();                // Returns all showtimes
 
-    void addReservation(Reservation r);           // Adds a new reservation
+    void addReservation(Reservation r);
+    void removeReservation(String bookingID); // Removes reservation by booking ID
     Reservation findReservation(String bookingID);// Finds reservation by booking ID
     List<Reservation> getReservations();          // Returns all reservations
 
