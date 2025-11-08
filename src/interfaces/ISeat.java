@@ -1,4 +1,5 @@
 package interfaces;
+
 public interface ISeat {
     int getRow();  //returns number of the row of the seat (0 = first row)
     int getNumber(); //returns the seat number within the row
