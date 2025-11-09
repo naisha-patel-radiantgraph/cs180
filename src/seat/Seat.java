@@ -2,7 +2,9 @@ package seat;
 
 import interfaces.ISeat;
 
-public class Seat implements ISeat {
+import java.io.Serializable;
+
+public class Seat implements ISeat, Serializable {
 
     private int row;
     private int number;

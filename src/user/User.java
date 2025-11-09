@@ -3,11 +3,12 @@ package user;
 import interfaces.IUser;
 import reservation.Reservation;
 
+import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
-public class User implements IUser {
+public class User implements IUser, Serializable {
 
     private String username;                      // Unique username for login
     private String passwordHash;                  // Securely stored hashed password

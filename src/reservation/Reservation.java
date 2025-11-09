@@ -4,11 +4,13 @@ import interfaces.IReservation;
 import seat.Seat;
 import showtime.Showtime;
 import user.User;
+
+import java.io.Serializable;
 import java.util.UUID;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-public class Reservation implements IReservation {
+public class Reservation implements IReservation, Serializable {
 
     private String bookingID;
     private User user;
