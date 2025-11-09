@@ -1,12 +1,14 @@
 package movie;
 
 import interfaces.IMovie;
+
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
  * Simple POJO implementation of IMovie.
  */
-public class Movie implements IMovie {
+public class Movie implements IMovie, Serializable {
 
     private final String title;
     private final String genre;

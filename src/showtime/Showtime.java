@@ -4,6 +4,7 @@ import interfaces.IShowtime;
 import movie.Movie;
 import seat.Seat;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -16,7 +17,7 @@ import java.util.Objects;
  *   depending on any particular Seat implementation's internal synchronization.
  * - Row/col parameters are zero-based. IndexOutOfBoundsException is thrown for invalid coordinates.
  */
-public class Showtime implements IShowtime {
+public class Showtime implements IShowtime, Serializable {
 
     private final Movie movie;
     private final LocalDateTime dateTime;
