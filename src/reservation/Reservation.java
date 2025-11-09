@@ -69,6 +69,11 @@ public class Reservation implements IReservation, Serializable {
 
     @Override
     public void cancelAllSeats() {
+        for (int i = 0; i < bookedSeats.size(); i++) {
+            Seat seat = bookedSeats.get(i);
 
+            this.showtime.cancelSeat(seat.getRow(), seat.getNumber());
+        }
+        this.bookedSeats.clear();
     }
 }
