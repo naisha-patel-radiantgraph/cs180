@@ -167,3 +167,38 @@ All modification methods are synchronized to ensure thread-safe access for concu
 | `clearAll()` | void | public | None | Clears all stored entities (used mainly in testing). | Tested through JUnit by verifying all lists empty after call. |
 
 ---
+
+## Reservation Class
+
+### **Class Overview**
+The `Reservation` class is a data-carrying object that represents a single, confirmed booking. It acts as a "receipt," linking a specific `User` to one or more `Seat` objects for a given `Showtime`.
+It is created when a user finalizes their seat selection. The class constructor handles the task of telling the `Showtime` to mark the seats as booked, and its `cancelAllSeats` method tells the `Showtime` to free them.
+
+---
+
+### **Field Table**
+
+| Field Name    | Access Modifier | Type            | Description                                            |
+|:--------------|:----------------|:----------------|:-------------------------------------------------------|
+| `bookingID`   | private final   | String          | A unique ID identifying this specific reservation.     |
+| `user`        | private final   | User            | The user account that owns this reservation.           |
+| `showtime`    | private final   | Showtime        | The specific showtime this reservation is for.         |
+| `bookedSeats` | private final   | ArrayList<Seat> | The list of Seat objects associated with this booking. |
+| `bookingTime` | private final   | LocalDateTime   | The timestamp of when the reservation was created.     |
+
+---
+
+### **Method Table**
+
+| Method Name        | Return Type     | Access Modifier | Parameters                                          | Description                                                                                                      | How It Was Tested                                                                                                                                                                                        |
+|:-------------------|:----------------|:----------------|:----------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `Reservation()`    | Constructor     | public | User user, Showtime showtime, ArrayList<Seat> seats | Initializes all fields, generates a bookingID and bookingTime, and tells the Showtime to book each seat.         | Verified by checking `showtime.isSeatAvailable()` returned `false` after creation.                                                                                                                       |
+| `getBookingID()`   | String          | public | None                                                | Returns this reservation's unique ID.                                                                            | Verified that the returned ID was not null or empty.                                                                                                                                                     |
+| `getUser()`        | User            | public | None                                                | Returns the `User` who made this booking.                                                                        | Verified the returned `User` object was the same one passed to the constructor.                                                                                                                          |
+| `getShowtime()`    | Showtime        | public | None                                                | Returns the associated `Showtime`.                                                                               | Verified the returned `Showtime` object was the same one passed to the constructor.                                                                                                                      |
+| `getBookedSeats()` | ArrayList<Seat> | public | None                                                | Returns the list of seats reserved.                                                                              | Verified by checking the list size and for the presence of the specific `Seat` objects.                                                                                                                  |
+| `getBookingTime()` | LocalDateTime   | public | None                                                | Returns the timestamp of reservation creation.                                                                   | Verified that the returned `LocalDateTime` was not null.                                                                                                                                                 |
+| `getTotalPrice()`  | double          | public | None                                                | Calculates and returns the total cost by summing the price of each individual seat in `bookedSeats`.             | Verified by comparing the return value to a pre-calculated sum of the seats' prices.                                                                                                                     |
+| `cancelAllSeats()` | void            | public | None                                                | Frees all seats in this reservation by calling `showtime.cancelSeat()` for each one, then clears the local list. | Verified the internal seat list was empty and that `showtime.isSeatAvailable()` returned `true` for the seats.                                                                                                                                                                                                         |
+
+---
