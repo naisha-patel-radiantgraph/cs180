@@ -311,3 +311,29 @@ All booking-related methods are thread-safe to handle simultaneous client action
 | `getColCount()` | int | public | None | Returns number of columns in seating chart. | Verified with different seating configurations. |
 | `getSeats()` | Seat[][] | public | None | Returns internal 2D seat array reference. | Verified by confirming same matrix structure. |
 | `toString()` | String | public | None | Returns formatted details of the showtime, including movie title and seat layout summary. | Verified visually in log outputs. |
+
+---
+
+## **Seat Table**
+
+### **Class Overview**
+The `seat` class represents an individual seat and its current state. 
+This class manages checking the states of seats and the prices of those seats.
+
+| Field Name | Access Modifier | Type | Description |
+| :---- | :---- | :---- | :---- |
+| `row` | private | int | Labels the rows from A-Z |
+| `number` | private | int | Sets the seat number |
+| `booked` | private | boolean | Checks whether the seat has been booked or not |
+| `price` | private | double | Sets the price for a seat |
+
+| Method | Return | Access | Parameters | Description | Test |
+| :---- | :---- | :---- | :---- | :---- | :---- |
+| `getRow()` | int | public | none | Returns the seat’s row number | Verified in testInitialValues() to ensure the constructor correctly assigned the right number for row. |
+| `getNumber()` | int | public | none | Returns the seat number within the row | Checked in testInitialValues() to confirm that it received the right number for the seat. |
+| `isBooked()` | boolean | public | none | Returns true if the seat is currently booked | Tested in multiple tests such as testInitialValues(), testBookSeat(), and testCancelSeat() returning true and false to test conditions. |
+| `book()` | void | public | none | Marks seat as booked if not already booked | Verified in testBookSeat() and testDoubleBookingDoesNotUnbook() to confirm the status of booking |
+| `cancel()` | void | public | none | Marks the seat as free for booking if it was booked previously | Validated in testCancelSeat() and testCancelWhenNotBookedDoesNothing() to make sure that booking status changed when cancelled |
+| `getPrice()` | double | public | none | Returns current price of the seat | Confirmed in testInitialValues() and testPriceUpdate() to make sure price was returning the correct value |
+| `setPrice` | void | public | double P | Updates seat price to the given value | Tested in testPriceUpdate() to ensure price is correctly updated to given value. |
+| `getSeatLabel` | String | public | none | Returns a label for the seat based on row and letter, such as A1 or B7 | Verified in testInitialValues() and testAnotherSeatLabel() to make sure getSeatLabel is returning the correct SeatLabel |
