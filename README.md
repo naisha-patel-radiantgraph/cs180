@@ -202,3 +202,87 @@ It is created when a user finalizes their seat selection. The class constructor 
 | `cancelAllSeats()` | void            | public | None                                                | Frees all seats in this reservation by calling `showtime.cancelSeat()` for each one, then clears the local list. | Verified the internal seat list was empty and that `showtime.isSeatAvailable()` returned `true` for the seats.                                                                                                                                                                                                         |
 
 ---
+
+## **Movie Class**
+
+### **Class Overview**
+The `Movie` class models the core data attributes of a film shown in the system.  
+It provides a clean, immutable structure for storing and retrieving movie details such as title, genre, rating, runtime, and poster path.  
+This class is serializable and implements the `IMovie` interface to ensure cross-module compatibility.
+
+---
+
+### **Field Table**
+
+| Field Name | Access Modifier | Type | Description |
+|:------------|:----------------|:------|:--------------|
+| `title` | private final | String | The name of the movie; serves as a unique identifier. |
+| `genre` | private final | String | The genre or category of the movie (e.g., Action, Comedy, Drama). |
+| `rating` | private final | String | The rating of the movie (e.g., PG-13, R). |
+| `runtime` | private final | int | Duration of the movie in minutes; cannot be negative. |
+| `posterPath` | private | String | Optional path to the movie’s poster image file. |
+
+---
+
+### **Method Table**
+
+| Method Name | Return Type | Access Modifier | Parameters | Description | How It Was Tested |
+|:--------------|:-------------|:----------------|:-------------|:------------------|:------------------|
+| `Movie(String title, String genre, String rating, int runtime, String posterPath)` | Constructor | public | title, genre, rating, runtime, posterPath | Initializes all attributes; validates that `title` is non-null and `runtime` is non-negative. | Verified through `MovieTest` constructor tests with valid and invalid inputs. |
+| `Movie(String title, int runtime)` | Constructor | public | title, runtime | Convenience constructor allowing minimal initialization. | Verified default field values through `MovieTest`. |
+| `getTitle()` | String | public | None | Returns the title of the movie. | Tested via getter validation in `MovieTest`. |
+| `getGenre()` | String | public | None | Returns the genre of the movie. | Tested via field verification. |
+| `getRating()` | String | public | None | Returns the rating. | Tested for null and valid values. |
+| `getRuntime()` | int | public | None | Returns runtime in minutes. | Tested for non-negative validation. |
+| `getPosterPath()` | String | public | None | Returns the poster path, if any. | Tested by setting and retrieving paths. |
+| `setPosterPath(String path)` | void | public | path | Updates the poster path dynamically. | Tested by modifying and rechecking the field. |
+| `toString()` | String | public | None | Returns formatted movie details string. | Manually verified for clarity and correctness. |
+| `equals(Object o)` | boolean | public | o | Compares movies based on all fields. | Tested by comparing identical and different Movie objects. |
+| `hashCode()` | int | public | None | Generates hash based on all fields for use in hash-based collections. | Verified by comparing hash consistency for equal objects. |
+
+---
+
+## **Showtime Class**
+
+### **Class Overview**
+The `Showtime` class represents a single scheduled screening of a movie.  
+It manages seat layouts, booking and cancellation operations, pricing, and synchronization for multi-threaded environments.  
+Each instance links to a specific `Movie` and a specific `LocalDateTime`.  
+All booking-related methods are thread-safe to handle simultaneous client actions reliably.
+
+---
+
+### **Field Table**
+
+| Field Name | Access Modifier | Type | Description |
+|:------------|:----------------|:------|:--------------|
+| `movie` | private final | Movie | The movie associated with this showtime. |
+| `dateTime` | private final | LocalDateTime | The date and time of the screening. |
+| `seats` | private final | Seat[][] | 2D array representing seating layout. |
+| `booked` | private final | boolean[][] | Parallel 2D array tracking seat availability (true = booked). |
+| `basePrice` | private | double | The starting ticket price for the showtime. |
+| `auditoriumName` | private | String | Name of the theater room or auditorium. |
+
+---
+
+### **Method Table**
+
+| Method Name | Return Type | Access Modifier | Parameters | Description | How It Was Tested |
+|:--------------|:-------------|:----------------|:-------------|:------------------|:------------------|
+| `Showtime(Movie movie, LocalDateTime dateTime, Seat[][] seats, double basePrice, String auditoriumName)` | Constructor | public | movie, dateTime, seats, basePrice, auditoriumName | Initializes a showtime with a provided seating chart; validates all inputs. | Tested with valid and invalid arguments to verify exceptions. |
+| `Showtime(Movie movie, LocalDateTime dateTime, int rows, int cols, double basePrice, String auditoriumName)` | Constructor | public | movie, dateTime, rows, cols, basePrice, auditoriumName | Creates an empty seat chart with specified dimensions. | Verified through `ShowtimeTest` for correct matrix initialization. |
+| `getMovie()` | Movie | public | None | Returns the movie being shown. | Checked via equality to constructor parameter. |
+| `getDateTime()` | LocalDateTime | public | None | Returns the date and time of the screening. | Verified with constructor assignment. |
+| `getSeat(int row, int col)` | Seat | public | row, col | Returns the seat object at specified coordinates. | Tested by retrieving known positions. |
+| `bookSeat(int row, int col)` | boolean | public | row, col | Books the specified seat if available; synchronized for thread safety. | Verified by confirming booked state transitions from false → true. |
+| `cancelSeat(int row, int col)` | boolean | public | row, col | Cancels a booked seat; returns false if seat was not previously booked. | Tested through booking and then canceling same seat. |
+| `isSeatAvailable(int row, int col)` | boolean | public | row, col | Checks if a seat is free to book. | Verified before and after booking. |
+| `getAvailableSeatCount()` | int | public | None | Returns total number of unbooked seats. | Tested with partial booking scenarios. |
+| `getBasePrice()` | double | public | None | Returns base ticket price. | Verified through getter check. |
+| `setBasePrice(double price)` | void | public | price | Updates base price; ensures non-negative value. | Tested with valid and invalid price inputs. |
+| `getAuditoriumName()` | String | public | None | Returns the auditorium name. | Verified against initialization value. |
+| `setAuditoriumName(String name)` | void | public | name | Updates auditorium name. | Verified by setting and retrieving new name. |
+| `getRowCount()` | int | public | None | Returns number of rows in seating chart. | Tested with small and large seating layouts. |
+| `getColCount()` | int | public | None | Returns number of columns in seating chart. | Verified with different seating configurations. |
+| `getSeats()` | Seat[][] | public | None | Returns internal 2D seat array reference. | Verified by confirming same matrix structure. |
+| `toString()` | String | public | None | Returns formatted details of the showtime, including movie title and seat layout summary. | Verified visually in log outputs. |
