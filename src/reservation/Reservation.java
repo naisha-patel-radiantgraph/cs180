@@ -12,11 +12,11 @@ import java.util.ArrayList;
 
 public class Reservation implements IReservation, Serializable {
 
-    private String bookingID;
-    private User user;
-    private Showtime showtime;
-    private ArrayList<Seat> bookedSeats;
-    private LocalDateTime bookingTime;
+    private final String bookingID;
+    private final User user;
+    private final Showtime showtime;
+    private final ArrayList<Seat> bookedSeats;
+    private final LocalDateTime bookingTime;
 
     public Reservation(User user, Showtime showtime, ArrayList<Seat> seats) {
         this.user = user;
