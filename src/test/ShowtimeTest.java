@@ -1,21 +1,21 @@
 package showtime;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 import movie.Movie;
 import seat.Seat;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 
-public class ShowtimeTest {
+import static org.junit.jupiter.api.Assertions.*;
+
+class ShowtimeTest {
 
     private Movie exampleMovie() {
         return new Movie("Inception", "Sci-Fi", "PG-13", 148, null);
     }
 
     @Test
-    public void testConstructorAndGetters() {
+    void testConstructorAndGetters() {
         Movie m = exampleMovie();
         LocalDateTime now = LocalDateTime.now();
         Seat[][] seats = new Seat[2][3];
@@ -25,31 +25,35 @@ public class ShowtimeTest {
         assertEquals(now, showtime.getDateTime());
         assertEquals(seats[1][1], showtime.getSeat(1, 1));
         assertEquals("Aud 1", showtime.getAuditoriumName());
-        assertEquals(10.0, showtime.getBasePrice(), 0.0);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testConstructorRejectsNullMovie() {
-        new Showtime(null, LocalDateTime.now(), new Seat[1][1], 10.0, "Main");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testConstructorRejectsNullDateTime() {
-        new Showtime(exampleMovie(), null, new Seat[1][1], 10.0, "Main");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testConstructorRejectsNullSeats() {
-        new Showtime(exampleMovie(), LocalDateTime.now(), null, 10.0, "Main");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testConstructorRejectsNegativeBasePrice() {
-        new Showtime(exampleMovie(), LocalDateTime.now(), new Seat[1][1], -1.0, "Main");
+        assertEquals(10.0, showtime.getBasePrice());
     }
 
     @Test
-    public void testBookSeatAndCancelSeat() {
+    void testConstructorRejectsNullMovie() {
+        assertThrows(IllegalArgumentException.class, () ->
+                new Showtime(null, LocalDateTime.now(), new Seat[1][1], 10.0, "Main"));
+    }
+
+    @Test
+    void testConstructorRejectsNullDateTime() {
+        assertThrows(IllegalArgumentException.class, () ->
+                new Showtime(exampleMovie(), null, new Seat[1][1], 10.0, "Main"));
+    }
+
+    @Test
+    void testConstructorRejectsNullSeats() {
+        assertThrows(IllegalArgumentException.class, () ->
+                new Showtime(exampleMovie(), LocalDateTime.now(), null, 10.0, "Main"));
+    }
+
+    @Test
+    void testConstructorRejectsNegativeBasePrice() {
+        assertThrows(IllegalArgumentException.class, () ->
+                new Showtime(exampleMovie(), LocalDateTime.now(), new Seat[1][1], -1.0, "Main"));
+    }
+
+    @Test
+    void testBookSeatAndCancelSeat() {
         Showtime showtime = new Showtime(exampleMovie(), LocalDateTime.now(), 2, 2, 8.0, "Little");
         assertTrue(showtime.isSeatAvailable(0, 0));
         assertTrue(showtime.bookSeat(0, 0));
@@ -61,7 +65,7 @@ public class ShowtimeTest {
     }
 
     @Test
-    public void testGetAvailableSeatCount() {
+    void testGetAvailableSeatCount() {
         Showtime showtime = new Showtime(exampleMovie(), LocalDateTime.now(), 2, 2, 12, null);
         assertEquals(4, showtime.getAvailableSeatCount());
         showtime.bookSeat(0,0);
@@ -70,28 +74,28 @@ public class ShowtimeTest {
     }
 
     @Test
-    public void testSetAndGetBasePrice() {
+    void testSetAndGetBasePrice() {
         Showtime showtime = new Showtime(exampleMovie(), LocalDateTime.now(), 1, 1, 5.0, null);
         showtime.setBasePrice(7.5);
-        assertEquals(7.5, showtime.getBasePrice(), 0.0);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testSetBasePriceRejectsNegative() {
-        Showtime showtime = new Showtime(exampleMovie(), LocalDateTime.now(), 1, 1, 5.0, null);
-        showtime.setBasePrice(-8.2);
+        assertEquals(7.5, showtime.getBasePrice());
     }
 
     @Test
-    public void testAuditoriumNameMutator() {
+    void testSetBasePriceRejectsNegative() {
+        Showtime showtime = new Showtime(exampleMovie(), LocalDateTime.now(), 1, 1, 5.0, null);
+        assertThrows(IllegalArgumentException.class, () -> showtime.setBasePrice(-8.2));
+    }
+
+    @Test
+    void testAuditoriumNameMutator() {
         Showtime showtime = new Showtime(exampleMovie(), LocalDateTime.now(), 1, 1, 5.0, "Old Name");
         showtime.setAuditoriumName("New Name");
         assertEquals("New Name", showtime.getAuditoriumName());
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
-    public void testSeatBounds() {
+    @Test
+    void testSeatBounds() {
         Showtime showtime = new Showtime(exampleMovie(), LocalDateTime.now(), 1, 1, 5.0, null);
-        showtime.getSeat(1,1); // Only row/col 0/0 is valid
+        assertThrows(IndexOutOfBoundsException.class, () -> showtime.getSeat(1,1));
     }
 }
