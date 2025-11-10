@@ -38,7 +38,7 @@ To verify installation, open a terminal or command prompt and run:
 java -version
 
 
-## Tentative Expected End Goal
+#Tentative Expected End Goal
 
 By the end of the full project, the system will evolve into an application that allows users to:
 - Browse available movies and showtimes.
