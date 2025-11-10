@@ -12,6 +12,31 @@ This phase establishes the core database framework, including:
 Each component has been tested through **JUnit 5** test cases to validate appropriate functionality.
 
 ---
+## Testing Instructions: 
+# **Compilation & Execution Guide**
+
+This project is developed and tested using **JUnit 5** and requires **Java 17 or later**.  
+Please follow all instructions below carefully to ensure successful compilation and execution.
+
+---
+
+## **1. Overview**
+
+This phase of the project focuses on backend implementation and verification through **JUnit 5** test cases.  
+There is **no main program** yet — all validation happens through automated unit testing.  
+The guide below explains how to set up, compile, and run the tests in both an **IDE** and via the **command line**.
+
+---
+
+## **2. System Requirements**
+
+Before starting, make sure the following software is installed and configured correctly:
+
+### ✅ **Java Development Kit (JDK 17 or later)**  
+To verify installation, open a terminal or command prompt and run:
+
+java -version
+
 
 ## Tentative Expected End Goal
 
