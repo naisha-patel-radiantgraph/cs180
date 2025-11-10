@@ -1,13 +1,14 @@
 package movie;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
 import interfaces.IMovie;
+import org.junit.jupiter.api.Test;
 
-public class MovieTest {
+import static org.junit.jupiter.api.Assertions.*;
+
+class MovieTest {
 
     @Test
-    public void testFullConstructorAndGetters() {
+    void testFullConstructorAndGetters() {
         Movie movie = new Movie("Inception", "Sci-Fi", "PG-13", 148, "/path/to/poster.jpg");
         assertEquals("Inception", movie.getTitle());
         assertEquals("Sci-Fi", movie.getGenre());
@@ -17,7 +18,7 @@ public class MovieTest {
     }
 
     @Test
-    public void testMinimalConstructor() {
+    void testMinimalConstructor() {
         Movie movie = new Movie("Memento", 113);
         assertEquals("Memento", movie.getTitle());
         assertNull(movie.getGenre());
@@ -26,18 +27,20 @@ public class MovieTest {
         assertNull(movie.getPosterPath());
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testConstructorRejectsNullTitle() {
-        new Movie(null, "Drama", "R", 100, null);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testConstructorRejectsNegativeRuntime() {
-        new Movie("Bad Movie", "Comedy", "PG", -5, null);
+    @Test
+    void testConstructorRejectsNullTitle() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new Movie(null, "Drama", "R", 100, null));
     }
 
     @Test
-    public void testSetPosterPath() {
+    void testConstructorRejectsNegativeRuntime() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new Movie("Bad Movie", "Comedy", "PG", -5, null));
+    }
+
+    @Test
+    void testSetPosterPath() {
         Movie movie = new Movie("Interstellar", 169);
         assertNull(movie.getPosterPath());
         movie.setPosterPath("/new/poster.jpg");
@@ -47,7 +50,7 @@ public class MovieTest {
     }
 
     @Test
-    public void testToStringNonNull() {
+    void testToStringNonNull() {
         Movie movie = new Movie("The Prestige", "Drama", "PG-13", 130, null);
         String s = movie.toString();
         assertTrue(s.contains("The Prestige"));
@@ -55,7 +58,7 @@ public class MovieTest {
     }
 
     @Test
-    public void testEqualsAndHashCode() {
+    void testEqualsAndHashCode() {
         Movie a = new Movie("Tenet", "Action", "PG-13", 150, "/a.jpg");
         Movie b = new Movie("Tenet", "Action", "PG-13", 150, "/a.jpg");
         Movie c = new Movie("Tenet", "Action", "PG-13", 150, "/b.jpg");
@@ -66,7 +69,7 @@ public class MovieTest {
     }
 
     @Test
-    public void testImplementsIMovie() {
+    void testImplementsIMovie() {
         IMovie movie = new Movie("Dunkirk", 106);
         assertTrue(movie instanceof IMovie);
     }
