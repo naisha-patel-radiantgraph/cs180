@@ -327,6 +327,8 @@ This class manages checking the states of seats and the prices of those seats.
 | `booked` | private | boolean | Checks whether the seat has been booked or not |
 | `price` | private | double | Sets the price for a seat |
 
+---
+
 | Method | Return | Access | Parameters | Description | Test |
 | :---- | :---- | :---- | :---- | :---- | :---- |
 | `getRow()` | int | public | none | Returns the seat’s row number | Verified in testInitialValues() to ensure the constructor correctly assigned the right number for row. |
