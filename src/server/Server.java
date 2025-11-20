@@ -1,6 +1,7 @@
 package server;
 
 import database.Database;
+import user.User;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -15,6 +16,24 @@ public class Server implements Runnable {
     public Server() {
         this.database = new Database();
         this.running = true;
+        initializeDefaultAdmin();
+    }
+
+    /**
+     * Creates the default admin account on server startup
+     * Username: admin
+     * Password: admin123
+     * This admin can manage the system and promote other users
+     */
+    private void initializeDefaultAdmin() {
+        // Check if admin already exists
+        if (database.findUser("admin") == null) {
+            User adminUser = new User("admin", "admin123", "admin@cinema.com", true);
+            database.addUser(adminUser);
+            System.out.println("Default admin account created (username: admin, password: admin123)");
+        } else {
+            System.out.println("Admin account already exists");
+        }
     }
 
     public Database getDatabase() {
