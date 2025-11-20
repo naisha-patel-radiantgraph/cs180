@@ -94,4 +94,21 @@ public class User implements IUser, Serializable {
         return String.format("User[username='%s', email='%s', admin=%b, reservations=%d]",
                 username, email, isAdmin, reservations.size());
     }
+
+    // --- PHASE 2 ADDITIONS ---
+
+    @Override
+    public void setAdmin(boolean isAdmin) {
+        this.isAdmin = isAdmin;
+    }
+
+    @Override
+    public boolean hasReservation(String bookingID) {
+        for (Reservation r : reservations) {
+            if (r.getBookingID().equals(bookingID)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

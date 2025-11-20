@@ -175,4 +175,34 @@ public class Database implements IDatabase, Serializable {
         showtimes.clear();
         reservations.clear();
     }
+
+    // --- PHASE 2 ADDITIONS ---
+
+    @Override
+    public synchronized boolean movieExists(String title) {
+        for (Movie m : movies) {
+            if (m.getTitle().equals(title)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public synchronized boolean usernameExists(String username) {
+        return findUser(username) != null;
+    }
+
+    @Override
+    public synchronized boolean isShowtimeConflict(Movie m, LocalDateTime dt) {
+        return findShowtime(m, dt) != null;
+    }
+
+    @Override
+    public synchronized void promoteUserToAdmin(String username) {
+        User user = findUser(username);
+        if (user != null) {
+            user.setAdmin(true);
+        }
+    }
 }
