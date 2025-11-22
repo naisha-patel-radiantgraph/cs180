@@ -277,6 +277,11 @@ public class ClientHandler implements Runnable {
             // Create new user (non-admin by default)
             User newUser = new User(username, password, email, false);
             db.addUser(newUser);
+            try {
+                db.saveDatabase();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             sendSuccess("Account created successfully");
         }
     }
@@ -510,6 +515,11 @@ public class ClientHandler implements Runnable {
             synchronized (db) {
                 db.addReservation(reservation);
                 currentUser.addReservation(reservation);
+                try {
+                    db.saveDatabase();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
 
             double totalCost = reservation.getTotalPrice();
@@ -557,6 +567,11 @@ public class ClientHandler implements Runnable {
             reservation.cancelAllSeats();
             db.removeReservation(bookingId);
             currentUser.removeReservation(bookingId);
+            try {
+                db.saveDatabase();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
             sendSuccess("Reservation cancelled");
         }
@@ -650,6 +665,11 @@ public class ClientHandler implements Runnable {
 
             Movie newMovie = new Movie(title, genre, rating, runtime, null);
             db.addMovie(newMovie);
+            try {
+                db.saveDatabase();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             sendSuccess("Movie added with ID: " + title);
         }
     }
@@ -724,6 +744,11 @@ public class ClientHandler implements Runnable {
 
             Showtime newShowtime = new Showtime(movie, dateTime, rows, cols, basePrice, auditorium);
             db.addShowtime(newShowtime);
+            try {
+                db.saveDatabase();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             sendSuccess("Showtime added with ID: ST_" + (db.getShowtimes().size() - 1));
         }
     }
@@ -761,6 +786,11 @@ public class ClientHandler implements Runnable {
 
             // Note: User class needs setAdmin method as per Phase 2 spec
             // For now, sending success - this will need to be updated when setAdmin is added
+            try {
+                db.saveDatabase();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             sendSuccess("User promoted to admin");
         }
     }
