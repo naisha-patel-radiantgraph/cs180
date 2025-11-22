@@ -14,7 +14,15 @@ public class Server implements Runnable {
     private final Database database;
 
     public Server() {
-        this.database = new Database();
+        Database loadedDb = null;
+        try {
+            loadedDb = (Database) new Database().loadDatabase();
+            System.out.println("Database loaded successfully.");
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("No existing database found, starting fresh.");
+            loadedDb = new Database();
+        }
+        this.database = loadedDb;
         this.running = true;
         initializeDefaultAdmin();
     }

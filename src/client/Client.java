@@ -171,24 +171,81 @@ public class Client {
             }
         }
     }
+    private void listShowtimes(String movieId) throws IOException {
+        serverOut.println("LIST_SHOWTIMES|" + movieId);
+        String response = serverIn.readLine();
+        if (response != null && response.startsWith("SUCCESS")) {
+            String[] parts = response.split("\\|");
+            int showtimeCount = 0;
+            if (parts.length > 1) {
+                try {
+                    showtimeCount = Integer.parseInt(parts[1]);
+                } catch (NumberFormatException ignored) {}
+            }
+            if (showtimeCount == 0) {
+                System.out.println("  No showtimes available for movie ID: " + movieId);
+                serverIn.readLine();
+                return;
+            }
+
+            System.out.println("  Showtimes for Movie ID: " + movieId + " (" + showtimeCount + " total):");
+            for (int i = 0; i < showtimeCount; i++) {
+                String showtimeLine = serverIn.readLine();
+                if (showtimeLine != null && showtimeLine.startsWith("SHOWTIME")) {
+                    String[] fields = showtimeLine.split("\\|");
+                    String showtimeId = fields[1];
+                    String dateTime = fields[2];
+                    String availableSeats = fields[3];
+                    String totalSeats = fields[4];
+                    String price = fields[5];
+                    String auditorium = fields[6];
+                    System.out.println("    Showtime ID: " + showtimeId + " | DateTime: " + dateTime +
+                            " | Available Seats: " + availableSeats + "/" + totalSeats +
+                            " | Price: $" + price + " | Auditorium: " + auditorium);
+                }
+            }
+
+            serverIn.readLine();
+        } else {
+            System.out.println("  Error loading showtimes for movie ID: " + movieId);
+        }
+    }
 
     private void listMovies() throws IOException {
         serverOut.println("LIST_MOVIES");
         String response = serverIn.readLine();
         if (response != null && response.startsWith("SUCCESS")) {
             String[] parts = response.split("\\|");
-            int count = 0;
+            int movieCount = 0;
             if (parts.length > 1) {
                 try {
-                    count = Integer.parseInt(parts[1]);
+                    movieCount = Integer.parseInt(parts[1]);
                 } catch (NumberFormatException ignored) {}
             }
-            System.out.println("Movies available: " + count);
-            for (int i = 0; i < count; i++) {
+            System.out.println("\nMovies available: " + movieCount);
+
+            List<String> movieIds = new ArrayList<>();
+            for (int i = 0; i < movieCount; i++) {
                 String movieLine = serverIn.readLine();
-                System.out.println(movieLine.replace("MOVIE|", ""));
+                if (movieLine != null && movieLine.startsWith("MOVIE")) {
+                    String[] fields = movieLine.split("\\|");
+                    String movieId = fields[1];
+                    String title = fields[2];
+                    String genre = fields[3];
+                    String rating = fields[4];
+                    String runtime = fields[5];
+                    System.out.println("Movie ID: " + movieId + " | Title: " + title +
+                            " | Genre: " + genre + " | Rating: " + rating + " | Runtime: " + runtime + " mins");
+                    movieIds.add(movieId);
+                }
             }
-            System.out.println(serverIn.readLine());
+
+            serverIn.readLine();
+
+            for (String movieId : movieIds) {
+                listShowtimes(movieId);
+            }
+
         } else {
             System.out.println("Error: " + (response != null ? response.replace("ERROR|", "") : "Unknown error"));
         }
@@ -196,7 +253,14 @@ public class Client {
 
     private void bookSeats() throws IOException {
         System.out.println("Booking seats...");
-        System.out.print("Enter showtime ID: ");
+        listMovies();
+        System.out.print("\nEnter movie ID (exact title): ");
+        String movieId = userIn.nextLine().trim();
+        if (movieId.isEmpty()) {
+            System.out.println("Invalid movie ID. Returning to menu.");
+            return;
+        }
+        System.out.print("Enter showtime ID (e.g., ST_0): ");
         String showtimeId = userIn.nextLine().trim();
         if (showtimeId.isEmpty()) {
             System.out.println("Invalid showtime ID. Returning to menu.");
@@ -233,7 +297,10 @@ public class Client {
 
         String response = serverIn.readLine();
         if (response != null && response.startsWith("SUCCESS")) {
-            System.out.println("Booking confirmed: " + response);
+            String[] parts = response.split("\\|");
+            String bookingId = parts.length > 0 ? parts[1] : "Unknown";
+            String totalCost = parts.length > 1 ? parts[2] : "0.00";
+            System.out.println("Booking confirmed! ID: " + bookingId + " | Total cost: $" + totalCost);
         } else {
             System.out.println("Error: " + (response != null ? response.replace("ERROR|", "") : "Unknown error"));
         }
