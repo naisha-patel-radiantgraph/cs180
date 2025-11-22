@@ -7,18 +7,15 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Client {
-
     private final String host;
     private final int port;
     private Socket socket;
     private BufferedReader serverIn;
     private PrintWriter serverOut;
     private final Scanner userIn;
-
     private boolean isLoggedIn = false;
     private String currentUsername = null;
     private boolean isAdmin = false;
-
     public Client(String host, int port) {
         this.host = host;
         this.port = port;
