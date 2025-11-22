@@ -32,4 +32,14 @@ public interface IDatabase {
     IDatabase loadDatabase() throws IOException, ClassNotFoundException; // Loads database from file
 
     void clearAll();  // Clears all stored data (used for testing)
+
+    // --- PHASE 2 ADDITIONS ---
+
+    boolean usernameExists(String username);
+
+    boolean movieExists(String title);
+
+    boolean isShowtimeConflict(Movie m, LocalDateTime dt);
+
+    void promoteUserToAdmin(String username);
 }

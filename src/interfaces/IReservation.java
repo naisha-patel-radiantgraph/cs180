@@ -17,4 +17,7 @@ public interface IReservation {
     double getTotalPrice();                     //returns the total cost of all booked seats.
     void cancelAllSeats();                      //Free the seats in the reservation to cancel them.
 
+    // --- PHASE 2 ADDITIONS ---
+
+    String summary();
 }

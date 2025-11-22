@@ -15,4 +15,10 @@ public interface IUser {
     ArrayList<Reservation> getReservations(); //returns all reservations of the user
     void addReservation(Reservation reservation); //adds a new reservation
     void removeReservation(String bookingID); //removes reservation by booking ID
+
+    // --- PHASE 2 ADDITIONS ---
+
+    void setAdmin(boolean isAdmin);
+
+    boolean hasReservation(String bookingID);
 }

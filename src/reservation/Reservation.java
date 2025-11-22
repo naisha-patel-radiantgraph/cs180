@@ -6,6 +6,7 @@ import showtime.Showtime;
 import user.User;
 
 import java.io.Serializable;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -69,11 +70,40 @@ public class Reservation implements IReservation, Serializable {
 
     @Override
     public void cancelAllSeats() {
-        for (int i = 0; i < bookedSeats.size(); i++) {
-            Seat seat = bookedSeats.get(i);
-
-            this.showtime.cancelSeat(seat.getRow(), seat.getNumber());
+        if (this.bookedSeats != null) {
+            for (int i = 0; i < this.bookedSeats.size(); i++) {
+                Seat seat = this.bookedSeats.get(i);
+                this.showtime.cancelSeat(seat.getRow(), seat.getNumber());
+            }
+            this.bookedSeats.clear();
         }
-        this.bookedSeats.clear();
+    }
+
+    // --- PHASE 2 ADDITIONS ---
+
+    @Override
+    public String summary() {
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy 'at' hh:mma");
+        String formattedDateTime = showtime.getDateTime().format(formatter);
+
+        String seatList = "";
+        for(int i = 0; i < bookedSeats.size(); i++) {
+            seatList += bookedSeats.get(i).getSeatLabel();
+            if(i != bookedSeats.size() - 1) {
+                seatList += ", ";
+            }
+        }
+
+        String result = "-----------------------------\n";
+        result += String.format("Booking ID: %s\n", getBookingID());
+        result += String.format("Movie: %s\n", showtime.getMovie().getTitle());
+        result += String.format("Showtime: %s\n", formattedDateTime);
+        result += String.format("Auditorium: %s\n", showtime.getAuditoriumName());
+        result += String.format("Seats: %s\n", seatList);
+        result += String.format("Total Cost: $%.2f\n", getTotalPrice());
+        result += "----------------------------";
+
+        return result;
     }
 }
