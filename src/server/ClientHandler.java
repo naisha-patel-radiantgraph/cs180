@@ -6,6 +6,7 @@ import movie.Movie;
 import showtime.Showtime;
 import seat.Seat;
 import reservation.Reservation;
+import interfaces.IClientHandler;
 
 import java.io.*;
 import java.net.Socket;
@@ -20,7 +21,7 @@ import java.util.regex.Pattern;
  * ClientHandler manages communication with a single connected client.
  * Runs in its own thread and processes all client commands according to the protocol.
  */
-public class ClientHandler implements Runnable {
+public class ClientHandler implements Runnable, IClientHandler {
 
     private final Socket socket;
     private final Server server;

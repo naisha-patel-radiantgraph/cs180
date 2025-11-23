@@ -5,8 +5,9 @@ import user.User;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import interfaces.IServer;
 
-public class Server implements Runnable {
+public class Server implements Runnable, IServer {
 
     private static final int PORT = 4242;
     private ServerSocket serverSocket;

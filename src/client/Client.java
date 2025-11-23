@@ -9,8 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import interfaces.IClient;
 
-public class Client {
+public class Client implements IClient{
 
     private final String host;
     private final int port;
