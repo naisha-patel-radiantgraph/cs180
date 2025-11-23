@@ -29,7 +29,7 @@ public class Database implements IDatabase, Serializable {
 
     @Override
     public synchronized List<User> getUsers() {
-        return users;
+        return new ArrayList<>(users);
     }
 
 
@@ -89,7 +89,7 @@ public class Database implements IDatabase, Serializable {
 
     @Override
     public synchronized List<Movie> getMovies() {
-        return movies;
+        return new ArrayList<>(movies);
     }
 
 
@@ -112,7 +112,7 @@ public class Database implements IDatabase, Serializable {
 
     @Override
     public synchronized List<Showtime> getShowtimes() {
-        return showtimes;
+        return new ArrayList<>(showtimes);
     }
 
 
@@ -149,7 +149,7 @@ public class Database implements IDatabase, Serializable {
 
     @Override
     public synchronized List<Reservation> getReservations() {
-        return reservations;
+        return new ArrayList<>(reservations);
     }
 
 
@@ -203,6 +203,11 @@ public class Database implements IDatabase, Serializable {
         User user = findUser(username);
         if (user != null) {
             user.setAdmin(true);
+            try {
+                saveDatabase();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

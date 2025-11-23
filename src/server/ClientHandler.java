@@ -759,16 +759,19 @@ public class ClientHandler implements Runnable {
      * Response: SUCCESS|User promoted to admin OR ERROR|<error message>
      */
     private void handleAdminPromoteUser(String[] parts) {
+        // Must be logged in
         if (!isAuthenticated) {
             sendError(Protocol.ERROR_AUTH_REQUIRED);
             return;
         }
 
+        // Must be an admin
         if (!currentUser.isAdmin()) {
             sendError(Protocol.ERROR_ADMIN_REQUIRED);
             return;
         }
 
+        // Check argument count
         if (parts.length < 2) {
             sendError(Protocol.ERROR_INVALID_FORMAT);
             return;
@@ -779,21 +782,30 @@ public class ClientHandler implements Runnable {
         synchronized (db) {
             User user = db.findUser(username);
 
+            // User must exist
             if (user == null) {
                 sendError("User not found");
                 return;
             }
 
-            // Note: User class needs setAdmin method as per Phase 2 spec
-            // For now, sending success - this will need to be updated when setAdmin is added
-            try {
-                db.saveDatabase();
-            } catch (IOException e) {
-                e.printStackTrace();
+            // Already admin?
+            if (user.isAdmin()) {
+                sendError("User is already an admin");
+                return;
             }
+
+            // Actually promote the user and save to disk
+            db.promoteUserToAdmin(username);
+
+            // Optional: if you just promoted yourself, refresh currentUser flag
+            if (currentUser.getUsername().equals(username)) {
+                currentUser.setAdmin(true);
+            }
+
             sendSuccess("User promoted to admin");
         }
     }
+
 
     /**
      * Handle ADMIN_VIEW_ALL_BOOKINGS command

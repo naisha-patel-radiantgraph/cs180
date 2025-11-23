@@ -24,10 +24,9 @@ public class User implements IUser, Serializable {
         this.reservations = new ArrayList<>();
     }
 
-    public String hashPassword(String password)  {
+    private static String hashPassword(String password) {
         try {
-            MessageDigest md;
-            md = MessageDigest.getInstance("MD5");
+            MessageDigest md = MessageDigest.getInstance("MD5");
             byte[] digest = md.digest(password.getBytes());
             StringBuilder sb = new StringBuilder();
             for (byte b : digest) {
@@ -80,14 +79,14 @@ public class User implements IUser, Serializable {
 
     @Override
     public void removeReservation(String bookingID) {
-        for (Reservation r : reservations) {
-            if (r.getBookingID().equals(bookingID)) {
-                reservations.remove(r);
+        for (int i = 0; i < reservations.size(); i++) {
+            if (reservations.get(i).getBookingID().equals(bookingID)) {
+                reservations.remove(i);
                 break;
             }
         }
-
     }
+
 
     @Override
     public String toString() {
@@ -111,4 +110,5 @@ public class User implements IUser, Serializable {
         }
         return false;
     }
+
 }
