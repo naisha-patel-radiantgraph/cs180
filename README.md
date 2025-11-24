@@ -538,3 +538,44 @@ The `ClientHandler` class manages all communication between a connected client a
 | `findShowtimeById(String showtimeId)` | Showtime | private | showtimeId | Resolves internal showtime reference by formatted ID. | Tested in `testFindShowtimeByIdViaReflection`. |
 
 ---
+
+## **Client Table**
+
+### **Class Overview**
+The `client` class is the user-facing terminal program. 
+It connects to the server, receives textual prompts, and sends user commands. 
+The client stores no data locally, everything is requested from the server.
+
+| Field Name | Access Modifier | Type | Description |
+| :---- | :---- | :---- | :---- |
+| `host` | Private final | String | The hostname/IP address that the client connects to. |
+| `port` | Private final | int | The server port that the client uses to establish a connection. |
+| `socket` | private | Socket | Socket used to connect to the server. |
+| `serverIn` | private | BufferedReader | Reads inputs from the server. |
+| `serverOut` | private | PrintWriter | Sends outputs to the server. |
+| `userIn` | Private final | Scanner | Reads input from user |
+| `isLoggedIn` | private | boolean | Tracks whether the user is currently logged in. |
+| `currentUsername` | private | String | Stores the username of the currently logged in user. |
+| `isAdmin` | private | boolean | Tracks whether the user who is logged in has admin privileges. |
+
+---
+
+| Method | Return | Access | Parameters | Description | Test |
+| :---- | :---- | :---- | :---- | :---- | :---- |
+| `Client` | NA | public | String host, int port | Constructor which initializes the client with the server host, port, and scanner for user input. | Indirectly tested via flow based tests such as testSuccessfulLogin() and testRegisterSuccess() |
+| `start` | void | public | none | Connects to the server, displays the welcome message, and starts the main menu loop. | Not tested directly to avoid opening the real socket, but private methods that are called by start are tested individually via reflection. |
+| `mainMenu` | void | private | none | Handles the main menu, with it directing users to login, register, or exit, with access to the admin menu, or guest menu being based on the login status. | Indirectly tested via login(), register(), logout(), menu private methods. |
+| `login` | void | private | none | Prompts user for username and password, sends login request to the server, updates login and checks if logged in user is admin. | testSuccessfulLogin() |
+| `register` | void | private | none | Prompts user for username, password, and email, sends registration request to the server. | testRegisterSuccess() |
+| `logout` | void | private | none | Logs out the user, resets login and admin status, and informs the user of this change. | testSuccessfulLogin() indirectly after menu flow |
+| `guestMenu` | void | private | none | Displays the guest menu for logged in users who are not admins and handles user choices. | Indirectly tested via guest actions in tests like testListMovies() |
+| `adminMenu` | void | private | none | Displays the admin menu for logged in admin users and handles admin choices. | Indirectly tested via reflection tests calling addMovie, addShowtime, promoteUser |
+| `listMovies` | void | private | none | Requests the list of movies from the server, displays them, and optionally show showtimes for selected movie | testListMovies() |
+| `showShowtimesForMovies` | void | private | String movieId, String movieTitle | Requests showtimes for a specific movie and displays them. | testListMovies() indirectly via movie selection flow. |
+| `bookSeats` | void | private | none | Handles the full seat booking workflow, including movie selection, showtime selection, seat selection, and booking confirmation | testListMovies() indirectly via the booking seats flow. |
+| `viewSeatMap` | int\[\]\[\] | private | String showtimeId | Requests and displays the seat map for a given showtime, returns a 2D array representing available and booked seats. | Reflection-based tests with mock responses. |
+| `viewMyBookings` | void | private | none | Requests and displays all bookings for the logged-in user | Reflection-based tests with mock responses |
+| `addMovie` | void | private | none | Prompts the admin to enter new movie details and sends the add-movie request to the server | Reflection-based tests with mock responses |
+| `addShowTime` | void | private | none | Prompts the admin to enter new showtime details and sends the add-showtime request to the server. | Reflection-based admin tests |
+| `promoteUser` | void | private | none | Prompts for a username and sends a request to promote that user to admin. | Reflection-based admin tests |
+| `main` | void | public static | String\[ \]args | Entry point of the program. Creates a Client instance connecting to localhost: 4242 and starts it. | Reflection-based admin testsI |
