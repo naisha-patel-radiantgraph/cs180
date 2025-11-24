@@ -538,3 +538,55 @@ The `ClientHandler` class manages all communication between a connected client a
 | `findShowtimeById(String showtimeId)` | Showtime | private | showtimeId | Resolves internal showtime reference by formatted ID. | Tested in `testFindShowtimeByIdViaReflection`. |
 
 ---
+
+## User Class (Phase 2 Updates)
+
+### **Class Overview**
+The `User` class has been updated to support role management (promoting/demoting admins) and helper methods for checking reservation ownership.
+
+
+---
+
+### **Method Table**
+
+|            Method Name             | Return Type | Access Modifier | Parameters | Description                                                                                       | How It Was Tested                                                                                             |
+|:----------------------------------:|:-----------:|:---------------:|:----------:|:--------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------|
+|    `setAdmin(boolean isAdmin)`     |    void     |     public      |  `isAdmin`   | Updates the user's admin status.                                                                  | Tested in `UserTest.testSetAdmin` by toggling the status and verifying `isAdmin()` returns the correct value. |
+| `hasReservation(String bookingID)` |   boolean   |     public      | `bookingID`  | Checks if user has the specific reservation. | Tested in `testSetupStreamsInitializesInAndOut`.                                                              |
+
+---
+
+## Reservation Class (Phase 2 Updates)
+
+### **Class Overview**
+Now includes formatting logic to generate a user-friendly receipt string for the client.
+
+
+---
+
+### **Method Table**
+
+| Method Name | Return Type | Access Modifier | Parameters | Description                                 | How It Was Tested                       |
+|:-----------:|:-----------:|:---------------:|:----------:|:--------------------------------------------|:----------------------------------------|
+| `summary()` |   String    |     public      |    None    | Returns a formatted receipt of the booking. | Tested in `ReservationTest.testSummary` |
+
+---
+
+## Database Class (Phase 2 Updates)
+
+### **Class Overview**
+Expanded to include server-side validation helpers and admin promotion logic.
+
+---
+
+### **Method Table**
+
+|            Method Name             | Return Type | Access Modifier | Parameters | Description                    | How It Was Tested                            |
+|:----------------------------------:|:-----------:|:---------------:|:----------:|:-------------------------------|:---------------------------------------------|
+|    `usernameExists(String username)`     |   boolean   |  synchronized   | `username` | Checks if a username is taken. | Tested in `DatabaseTest.testUsernameExists`. |
+| `movieExists(String title)` |   boolean   |     synchronized      |  `title`   | Checks if a movie title exists.                               |  Tested in `DatabaseTest.testMovieExists`.                                            |
+|    `isShowtimeConflict(Movie m, LocalDateTime dt)`     |   boolean   |     synchronized      |  `m`,`dt`  | Checks for scheduling conflicts.                               |  Tested in `DatabaseTest.testIsShowtimeConflict`.                                            |
+|    `promoteUserToAdmin(String username)`     |   boolean   |     synchronized      | `username` | Promotes a user to admin and saves DB.                               |  Tested in `DatabaseTest.testPromoteUserToAdmin`.                                            |
+
+---
+
