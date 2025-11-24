@@ -159,5 +159,33 @@ public class UserTest {
         assertNotNull(regularUser.hashCode());
     }
 
+    // --- PHASE 2 TESTS ---
+
+    @Test
+    public void testSetAdmin() {
+        assertFalse(regularUser.isAdmin(), "Should start as regular user");
+        regularUser.setAdmin(true);
+        assertTrue(regularUser.isAdmin(), "Should be admin after setAdmin(true)");
+        regularUser.setAdmin(false);
+        assertFalse(regularUser.isAdmin(), "Should be regular user after setAdmin(false)");
+    }
+
+    @Test
+    public void testHasReservation() {
+        Showtime s = new Showtime(
+                new movie.Movie("Matrix", "Sci-Fi", "PG-13", 136, "matrix.jpg"),
+                java.time.LocalDateTime.now(),
+                5, 5, 10.0,
+                "Auditorium 1"
+        );
+        seat.Seat seat = new seat.Seat(1, 2, 12.5);
+        ArrayList<seat.Seat> seats = new ArrayList<>();
+        seats.add(seat);
+        Reservation r1 = new Reservation(regularUser, s, seats);
+        regularUser.addReservation(r1);
+        assertTrue(regularUser.hasReservation(r1.getBookingID()), "User should have the reservation");
+        assertFalse(regularUser.hasReservation("ID does not exist"), "User should not have a reservation ID");
+    }
+
 }
 

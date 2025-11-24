@@ -100,7 +100,7 @@ public class ReservationTest {
         assertNotNull(summary, "summary should not be null.");
         assertTrue(summary.contains(reservation.getBookingID()), "Summary should contain the booking ID.");
         assertTrue(summary.contains("Dune: Part Two"), "Summary should contain the movie title.");
-        assertTrue(summary.contains("Auditorium 1"), "Summary should contain the auditorium name.")
+        assertTrue(summary.contains("Auditorium 1"), "Summary should contain the auditorium name.");
 
         String priceString = String.format("%.2f", reservation.getTotalPrice());
         assertTrue(summary.contains(priceString), "Summary should contain correctly formatted price.");

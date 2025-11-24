@@ -174,7 +174,7 @@ public class DatabaseTest {
         db.addShowtime(testShowtime);
         assertTrue(db.isShowtimeConflict(testMovie, testShowtime.getDateTime()),
                 "Should detect conflict for same movie and time.");
-        assertFalse(db.isShowtimeConflict(testMovie, testShowtime.plusHours(3)),
+        assertFalse(db.isShowtimeConflict(testMovie, testShowtime.getDateTime().plusHours(3L)),
                 "Should not conflict with different.");
     }
 
