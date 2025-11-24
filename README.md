@@ -539,7 +539,7 @@ The `ClientHandler` class manages all communication between a connected client a
 
 ---
 
-## **Client Table**
+## Client Class
 
 ### **Class Overview**
 The `client` class is the user-facing terminal program. 
