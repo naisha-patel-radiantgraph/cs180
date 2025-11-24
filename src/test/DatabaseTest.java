@@ -153,5 +153,40 @@ public class DatabaseTest {
         assertTrue(testShowtime.isSeatAvailable(0, 2), "Seat (0,2) should still be available");
     }
 
+    // --- PHASE 2 TESTS ---
+
+    @Test
+    public void testMovieExists() {
+        db.addMovie(testMovie);
+        assertTrue(db.movieExists("Inception"), "Existing movie should return true.");
+        assertFalse(db.movieExists("Non-existent"), "Non-existent movie should return false.");
+    }
+
+    @Test
+    public void testUsernameExists() {
+        db.addUser(testUser);
+        assertTrue(db.usernameExists("gaurav"), "Username should exist and should return true.");
+        assertFalse(db.usernameExists("unknown"), "Username should not exist and should return false.");
+    }
+
+    @Test
+    public void testIsShowtimeConflict() {
+        db.addShowtime(testShowtime);
+        assertTrue(db.isShowtimeConflict(testMovie, testShowtime.getDateTime()),
+                "Should detect conflict for same movie and time.");
+        assertFalse(db.isShowtimeConflict(testMovie, testShowtime.plusHours(3)),
+                "Should not conflict with different.");
+    }
+
+    @Test
+    public void testPromoteUserToAdmin() {
+        db.addUser(testUser);
+        assertFalse(db.findUser("gaurav").isAdmin(), "User shouldn't be an admin.");
+
+        db.promoteUserToAdmin("gaurav");
+
+        User promoted =  db.findUser("gaurav");
+        assertTrue(promoted.isAdmin(), "User should be promoted to the admin.");
+    }
 
 }

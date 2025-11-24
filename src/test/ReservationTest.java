@@ -88,6 +88,25 @@ public class ReservationTest {
         assertTrue(testShowtime.isSeatAvailable(seat1.getRow(), seat1.getNumber()),
                 "Seat 1 was not freed in Showtime after cancellation.");
         assertTrue(testShowtime.isSeatAvailable(seat2.getRow(), seat2.getNumber()),
-                "Seat 2 was not freed in Showtime after cancellation");
+                "Seat 2 was not freed in Showtime after cancellation.");
     }
+
+    // --- PHASE 2 TESTS ---
+
+    @Test
+    public void testSummary() {
+        String summary = reservation.summary();
+
+        assertNotNull(summary, "summary should not be null.");
+        assertTrue(summary.contains(reservation.getBookingID()), "Summary should contain the booking ID.");
+        assertTrue(summary.contains("Dune: Part Two"), "Summary should contain the movie title.");
+        assertTrue(summary.contains("Auditorium 1"), "Summary should contain the auditorium name.")
+
+        String priceString = String.format("%.2f", reservation.getTotalPrice());
+        assertTrue(summary.contains(priceString), "Summary should contain correctly formatted price.");
+
+        assertTrue(summary.contains(seat1.getSeatLabel()), "Summary should contain seat 1 label.");
+        assertTrue(summary.contains(seat2.getSeatLabel()), "Summary should contain seat 2 label");
+    }
+
 }
