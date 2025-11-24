@@ -546,6 +546,10 @@ The `client` class is the user-facing terminal program.
 It connects to the server, receives textual prompts, and sends user commands. 
 The client stores no data locally, everything is requested from the server.
 
+---
+
+### **Field Table**
+
 | Field Name | Access Modifier | Type | Description |
 | :---- | :---- | :---- | :---- |
 | `host` | Private final | String | The hostname/IP address that the client connects to. |
@@ -559,6 +563,8 @@ The client stores no data locally, everything is requested from the server.
 | `isAdmin` | private | boolean | Tracks whether the user who is logged in has admin privileges. |
 
 ---
+
+### **Method Table**
 
 | Method | Return | Access | Parameters | Description | Test |
 | :---- | :---- | :---- | :---- | :---- | :---- |
