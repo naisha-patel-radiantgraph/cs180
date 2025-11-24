@@ -35,10 +35,14 @@ public class Server implements Runnable, IServer {
      * This admin can manage the system and promote other users
      */
     private void initializeDefaultAdmin() {
-        // Check if admin already exists
         if (database.findUser("admin") == null) {
             User adminUser = new User("admin", "admin123", "admin@cinema.com", true);
             database.addUser(adminUser);
+            try {
+                database.saveDatabase();
+            } catch (IOException e) {
+                System.out.println("Error saving database after creating admin: " + e.getMessage());
+            }
             System.out.println("Default admin account created (username: admin, password: admin123)");
         } else {
             System.out.println("Admin account already exists");

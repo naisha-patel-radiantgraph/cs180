@@ -104,6 +104,9 @@ public class Client implements IClient{
         String username = userIn.nextLine().trim();
         System.out.print("Password: ");
         String password = userIn.nextLine().trim();
+        while (serverIn.ready()) {
+            serverIn.readLine();
+        }
 
         serverOut.println("LOGIN|" + username + "|" + password);
         String response = serverIn.readLine();
@@ -143,8 +146,11 @@ public class Client implements IClient{
         }
     }
 
-    private void logout() {
+    private void logout() throws IOException {
         serverOut.println("LOGOUT");
+        while (serverIn.ready()) {
+            serverIn.readLine();
+        }
         isLoggedIn = false;
         currentUsername = null;
         isAdmin = false;
