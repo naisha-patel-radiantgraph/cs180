@@ -2,6 +2,8 @@
 
 For our project, we selected **Option 2**, which involves building an **Movie Ticket Booking System**. The goal of this project is to design and implement a modular, object-oriented system that accurately simulates how an industrial-style movie booking platform operates.
 
+## Phase 1
+
 This phase establishes the core database framework, including:
 - **Movie** – stores movie details such as title, genre, runtime, and poster path.
 - **Showtime** – manages screening schedules, seating arrangements, and booking states.
@@ -86,7 +88,7 @@ The following diagram flowchart displays how a user might interact with our prog
 
 ---
 
-### Arbin
+### Arbin Isaac De La Torre - Rodriguez
 - **Main Responsibilities:**
     - Created and implemented Seat class.
     - Created and implemented Seat interface.
@@ -96,7 +98,7 @@ The following diagram flowchart displays how a user might interact with our prog
 
 ---
 
-### Jakob
+### Jakob Graham
 - **Main Responsibilities:**
     - Created and implemented Reservation class.
     - Created and implemented Reservation interface.
@@ -339,3 +341,200 @@ This class manages checking the states of seats and the prices of those seats.
 | `getPrice()` | double | public | none | Returns current price of the seat | Confirmed in testInitialValues() and testPriceUpdate() to make sure price was returning the correct value |
 | `setPrice` | void | public | double P | Updates seat price to the given value | Tested in testPriceUpdate() to ensure price is correctly updated to given value. |
 | `getSeatLabel` | String | public | none | Returns a label for the seat based on row and letter, such as A1 or B7 | Verified in testInitialValues() and testAnotherSeatLabel() to make sure getSeatLabel is returning the correct SeatLabel |
+
+---
+
+## Phase 2
+
+## Phase 2
+
+This phase extends the system into a full client–server application, adding networked interaction on top of the existing database and domain classes. It introduces:
+
+- **Protocol** – centralizes all command strings (e.g., `LOGIN`, `LIST_MOVIES`, `BOOK`), response types (`SUCCESS`, `ERROR`), and delimiters used in messages between client and server. 
+
+
+- **Server** – starts the booking service, loads (or initializes) the shared `Database`, opens a listening `ServerSocket` on the configured port, and accepts incoming client connections. For each connection, it creates and starts a dedicated `ClientHandler`, enabling multiple clients to interact concurrently.
+
+- **ClientHandler** – runs in its own thread per client and is responsible for interpreting commands, validating input, enforcing authentication and admin permissions, interacting with the `Database` (movies, showtimes, users, reservations), and sending structured responses back to the client.
+
+- **Client** – provides a text-based user interface that connects to the server.
+
+All new Phase 2 classes are covered by **JUnit 5** test cases, including constructors and all non-`run()` methods. Private method logic is exercised via reflection-based tests as suggested on Ed.
+
+---
+
+## How to use this program
+
+All system requirements remain the same as Phase 1, including the use of Java 17 or later and JUnit 5 for testing. The program now runs through a client–server model and must be launched in the correct order.
+
+### Before the First Run
+- If a `myDataBase.ser` file already exists **(Before the first local run)** from a previous execution, it must be deleted before starting the server.
+- This ensures the system initializes with a clean state and creates the default administrator account.
+
+### Starting the Server
+1. Run the `Server` class.
+2. The server will load the database if it exists, or create a new one. (if it is the first run then it is essential that the database is created anew.)
+3. On first startup, the server automatically creates the default admin account:
+    - **Username:** admin
+    - **Password:** admin123
+
+### Logging in as Admin
+- Start the `Client` program after the server is running.
+- Use the default admin credentials to sign in.
+- The admin interface allows:
+    - Adding movies to the system
+    - Adding showtimes for existing movies
+    - Promoting another registered user to admin
+    - Viewing all bookings in the system
+- The database begins empty, so the admin must add movies and showtimes before any user can make bookings.
+
+### Logging in as a Regular User
+
+Note: Everytime you logout as a user and wish to login as another user it is imperative that the client must be refreshed. Especially if the user logging in is an admin.
+- Registration must occur first through the client interface.
+- Then the user can login after they've registered
+- Users can:
+    - Browse movies
+    - View available showtimes
+    - Select seats and complete a booking
+    - View and cancel their own reservations
+
+### Important Client Session Behavior
+- To log in as a different user, the client program must be fully exited and restarted.
+- Logging in as a guest and then as an admin within the same client session is not supported.
+- If attempted, the system will log in successfully but will not display the admin menu, so a restart is required.
+
+### Using the Application
+- Menus guide the user through all available options.
+- Seating displays indicate available and booked seats.
+- A unique booking ID is generated for each reservation.
+- Admin and guest menus are distinct.
+
+---
+
+## Team Member Contributions
+
+### Gaurav Mandhyan
+
+- **Role:** Team Leader
+
+- **Main Responsibilities:**
+    - Set up network I/O.
+    - Created Server class.
+    - Created Server Test.
+    - Created all Phase 2 interfaces.
+    - Debugged Client Handler and Client (manual integration testing).
+    - User Testing.
+    - Wrote Client Handler Test.
+    - Wrote Associated ReadMe sections.
+
+---
+
+### Naisha Patel & Arbin Isaac De La Torre - Rodriguez
+
+- **Main Responsibilities:**
+    - Created Client Handler class. 
+    - Wrote Client Handler Test.
+    - Created Client class.
+    - Wrote Client Test. 
+    - Wrote Associated ReadMe sections.
+
+---
+
+
+### Jakob Graham
+- **Main Responsibilities:**
+    - Modified all Phase 1 classes as needed for Phase 2.
+    - Tested the Same.
+    - Resolved CheckStyle errors.
+    - User testing.
+    - Debugged Client Handler and Client (manual integration testing).
+    - Wrote associated ReadMe sections.
+
+---
+
+## Class Descriptions   
+
+## Server Class
+
+### **Class Overview**
+The `Server` class manages the backend networking component of the system, accepting client connections and delegating them to handler threads.
+It also loads or initializes the database and ensures that a default administrator account exists when the server starts.
+
+---
+
+### **Field Table**
+
+| Field Name | Access Modifier | Type | Description |
+|:-----------:|:----------------:|:------:|:--------------:|
+| `PORT` | private static final | int | The fixed port number used for server communication. |
+| `serverSocket` | private | ServerSocket | The socket responsible for listening for incoming client connections. |
+| `running` | private volatile | boolean | Flag indicating whether the server is actively running. |
+| `database` | private final | Database | Stores persistent system data including users, movies, showtimes, and reservations. |
+
+---
+
+### **Method Table**
+
+| Method Name | Return Type | Access Modifier | Parameters | Description | How It Was Tested |
+|:--------------:|:--------------:|:----------------:|:-------------:|:------------------|:------------------|
+| `Server()` | Constructor | public | None | Loads existing database if available, otherwise creates a fresh one, and initializes a default admin account. | Verified through constructor tests checking database initialization and admin creation. |
+| `getDatabase()` | Database | public | None | Returns the database instance used by the server. | Tested by confirming non-null return and same instance across calls. |
+| `run()` | void | public | None | Starts the server socket, accepts client connections, and launches handler threads. | None Required |
+| `stop()` | void | public | None | Stops the server by setting running to false and closing the server socket. | Tested using reflection to confirm running becomes false and that stop does not throw. |
+| `initializeDefaultAdmin()` | void | private | None | Ensures a built-in administrator account exists in the database. | None Required |
+| `main(String[] args)` | void | public static | String[] args | Entry point that creates and launches the server in a new thread. | None Required |
+
+---
+
+## ClientHandler Class
+
+### **Class Overview**
+The `ClientHandler` class manages all communication between a connected client and the server. It interprets protocol commands, performs authentication, handles booking operations, and returns formatted responses back to the client. Each instance runs in its own thread and interacts directly with the shared database.
+
+---
+
+### **Field Table**
+
+| Field Name | Access Modifier | Type | Description |
+|:-----------:|:----------------:|:------:|:--------------:|
+| `socket` | private final | Socket | The network socket associated with this client connection. |
+| `server` | private final | Server | Reference to the server enabling access to shared resources. |
+| `db` | private final | Database | The shared database instance storing users, movies, showtimes, and reservations. |
+| `in` | private | BufferedReader | Input stream for receiving client messages. |
+| `out` | private | PrintWriter | Output stream for sending protocol responses to client. |
+| `currentUser` | private | User | The authenticated user associated with this connection. |
+| `isAuthenticated` | private | boolean | Tracks whether the user has successfully logged in. |
+| `USERNAME_PATTERN` | private static final | Pattern | Validation rule enforcing allowed username formats. |
+| `EMAIL_PATTERN` | private static final | Pattern | Validation rule enforcing valid email structure. |
+| `DATE_TIME_FORMATTER` | private static final | DateTimeFormatter | Formatter for parsing and formatting showtime date values. |
+
+---
+
+### **Method Table**
+
+| Method Name | Return Type | Access Modifier | Parameters | Description | How It Was Tested |
+|:--------------:|:--------------:|:----------------:|:-------------:|:------------------|:------------------|
+| `ClientHandler(Socket socket, Server server)` | Constructor | public | socket, server | Initializes handler streams and links to server database. | Automatically used in setup of ClientHandlerTest. |
+| `setupStreams()` | void | private | None | Initializes input and output streams for communication. | Tested in `testSetupStreamsInitializesInAndOut`. |
+| `closeEverything()` | void | private | None | Closes streams and socket safely when client disconnects. | Tested in `testCloseEverythingClosesSocket`. |
+| `send(String message)` | void | private | message | Sends raw protocol line to client. | Tested in `testSendWritesRawMessage`. |
+| `sendSuccess(String message)` | void | private | message | Sends SUCCESS-prefixed protocol response. | Tested in `testSendSuccessPrefixesSuccess`. |
+| `sendError(String message)` | void | private | message | Sends ERROR-prefixed protocol response. | Tested in `testSendErrorPrefixesError`. |
+| `handleCommand(String input)` | void | private | input | Parses command and dispatches to appropriate handler. | Tested indirectly in `testHandleCommandInvalidCommand`. |
+| `handleLogin(String[] parts)` | void | private | parts | Validates credentials and authenticates user. | Tested in `testHandleLoginSuccess` and `testHandleLoginBadPassword`. |
+| `handleRegister(String[] parts)` | void | private | parts | Creates a new user after validating inputs. | Tested in `testHandleRegisterSuccess` and `testHandleRegisterBadEmail`. |
+| `handleLogout()` | void | private | None | Logs out current user and clears authentication state. | Tested in `testHandleLogoutResetsAuth`. |
+| `handleListMovies()` | void | private | None | Sends list of all movies to client. | Tested in `testHandleListMoviesWithOneMovie`. |
+| `handleListShowtimes(String[] parts)` | void | private | parts | Sends all showtimes for a given movie. | Tested in `testHandleListShowtimesForMovie`. |
+| `handleViewSeats(String[] parts)` | void | private | parts | Sends formatted seat availability for a showtime. | Tested in `testHandleViewSeatsShowsAllAvailable`. |
+| `handleBookSeats(String[] parts)` | void | private | parts | Books requested seats and creates reservation. | Tested in `testHandleBookSeatsSuccess` and `testHandleBookSeatsRejectsDuplicateSelection`. |
+| `handleCancelReservation(String[] parts)` | void | private | parts | Cancels an existing reservation if owned by current user. | Tested in `testHandleCancelReservationSuccess`. |
+| `handleMyBookings()` | void | private | None | Sends list of bookings belonging to current user. | Tested in `testHandleMyBookingsListsReservations`. |
+| `handleAdminAddMovie(String[] parts)` | void | private | parts | Allows admin to add a new movie. | Tested in `testHandleAdminAddMovieSuccess`. |
+| `handleAdminAddShowtime(String[] parts)` | void | private | parts | Allows admin to add a new showtime. | Tested in `testHandleAdminAddShowtimeSuccess`. |
+| `handleAdminPromoteUser(String[] parts)` | void | private | parts | Promotes a normal user to admin. | Tested in `testHandleAdminPromoteUser`. |
+| `handleAdminViewAllBookings()` | void | private | None | Lists all reservations to admin. | Tested in `testHandleAdminViewAllBookings`. |
+| `findShowtimeById(String showtimeId)` | Showtime | private | showtimeId | Resolves internal showtime reference by formatted ID. | Tested in `testFindShowtimeByIdViaReflection`. |
+
+---
