@@ -390,7 +390,6 @@ All system requirements remain the same as Phase 1, including the use of Java 17
 
 ### Logging in as a Regular User
 
-Note: Everytime you logout as a user and wish to login as another user it is imperative that the client must be refreshed. Especially if the user logging in is an admin.
 - Registration must occur first through the client interface.
 - Then the user can login after they've registered
 - Users can:
@@ -399,10 +398,6 @@ Note: Everytime you logout as a user and wish to login as another user it is imp
     - Select seats and complete a booking
     - View and cancel their own reservations
 
-### Important Client Session Behavior
-- To log in as a different user, the client program must be fully exited and restarted.
-- Logging in as a guest and then as an admin within the same client session is not supported.
-- If attempted, the system will log in successfully but will not display the admin menu, so a restart is required.
 
 ### Using the Application
 - Menus guide the user through all available options.
