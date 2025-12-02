@@ -182,4 +182,19 @@ public class Showtime implements IShowtime, Serializable {
                 ", basePrice=" + basePrice +
                 '}';
     }
+
+    // PHASE 3 ADDITIONS :
+    @Override
+    public double getDynamicPrice() {
+        int totalSeats = getRowCount() * getColCount();
+        int available = getAvailableSeatCount();
+        int booked = totalSeats - available;
+
+        double ratio = (double) booked / totalSeats;
+
+        return basePrice * (1 + ratio);   // simple linear scaling
+    }
+
+
+
 }

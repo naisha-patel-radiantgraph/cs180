@@ -136,4 +136,6 @@ public interface IShowtime {
      * @return Seat[][] with dimensions [rows][cols]
      */
     Seat[][] getSeats();
+
+    double getDynamicPrice();
 }

@@ -98,4 +98,46 @@ class ShowtimeTest {
         Showtime showtime = new Showtime(exampleMovie(), LocalDateTime.now(), 1, 1, 5.0, null);
         assertThrows(IndexOutOfBoundsException.class, () -> showtime.getSeat(1,1));
     }
+
+    @Test
+    public void testGetDynamicPrice() {
+        Movie m = new Movie("DynamicMovie", "Drama", "PG", 120, null);
+
+        Showtime st = new Showtime(
+                m,
+                LocalDateTime.of(2025, 1, 1, 20, 0),
+                3, 4,
+                10.0,              // base price
+                "MainHall"
+        );
+
+        double base = 10.0;
+
+        assertEquals(base, st.getDynamicPrice(), 0.0001,
+                "Price should equal base price when no seats booked");
+
+
+        for (int i = 0; i < 6; i++) {
+            int row = i / 4;
+            int col = i % 4;
+            st.bookSeat(row, col);
+        }
+
+        double expected50 = base * (1 + 0.5);   // 10 * 1.5 = 15
+        assertEquals(expected50, st.getDynamicPrice(), 0.0001,
+                "Price should be 150% of base at 50% occupancy");
+
+        for (int i = 6; i < 10; i++) {
+            int row = i / 4;
+            int col = i % 4;
+            st.bookSeat(row, col);
+        }
+
+        double ratio83 = 10.0 / 12.0;
+        double expected83 = base * (1 + ratio83);
+
+        assertEquals(expected83, st.getDynamicPrice(), 0.0001,
+                "Price should scale smoothly with occupancy (~83%)");
+    }
+
 }

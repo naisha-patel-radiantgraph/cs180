@@ -336,7 +336,7 @@ public class ClientHandler implements Runnable, IClientHandler {
                         st.getDateTime().format(DATE_TIME_FORMATTER),
                         String.valueOf(availableSeats),
                         String.valueOf(totalSeats),
-                        String.format("%.2f", st.getBasePrice()),
+                        String.format("%.2f", st.getDynamicPrice()),
                         st.getAuditoriumName() != null ? st.getAuditoriumName() : ""
                 );
                 send(showtimeData);
@@ -479,7 +479,7 @@ public class ClientHandler implements Runnable, IClientHandler {
 
             ArrayList<Seat> bookedSeats = new ArrayList<>();
             for (int[] pos : seatPositions) {
-                Seat seat = new Seat(pos[0], pos[1], showtime.getBasePrice());
+                Seat seat = new Seat(pos[0], pos[1], showtime.getDynamicPrice());
                 bookedSeats.add(seat);
             }
 

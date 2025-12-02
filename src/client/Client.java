@@ -798,7 +798,7 @@ public class Client implements IClient{
         String rows = userIn.nextLine().trim();
         System.out.print("Enter number of columns: ");
         String cols = userIn.nextLine().trim();
-        System.out.print("Enter base price: ");
+        System.out.print("Enter base price (Note: Base Price Increases with demand): ");
         String price = userIn.nextLine().trim();
         System.out.print("Enter auditorium name: ");
         String auditorium = userIn.nextLine().trim();
