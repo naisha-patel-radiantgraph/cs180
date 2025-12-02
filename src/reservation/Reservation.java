@@ -18,11 +18,19 @@ public class Reservation implements IReservation, Serializable {
     private final Showtime showtime;
     private final ArrayList<Seat> bookedSeats;
     private final LocalDateTime bookingTime;
+    private String cardNumber;
+    private String expiry;
+    private String cvv;
 
-    public Reservation(User user, Showtime showtime, ArrayList<Seat> seats) {
+
+    public Reservation(User user, Showtime showtime, ArrayList<Seat> seats, String cardNumber, String expiry, String cvv) {
         this.user = user;
         this.showtime = showtime;
         this.bookedSeats = seats;
+
+        this.cardNumber = cardNumber;
+        this.expiry = expiry;
+        this.cvv = cvv;
 
         this.bookingTime = LocalDateTime.now();
 
@@ -105,5 +113,15 @@ public class Reservation implements IReservation, Serializable {
         result += "----------------------------";
 
         return result;
+    }
+    //Phase 3 Additions Card Information Getters
+    public String getCardNumber() {
+        return this.cardNumber;
+    }
+    public String getExpiry() {
+        return this.expiry;
+    }
+    public String getCvv() {
+        return this.cvv;
     }
 }

@@ -598,13 +598,43 @@ public class Client implements IClient{
                 break;
             }
         }
+        //Phase 3 Additions for Payment Processing
+        System.out.println("----------------------------");
+        System.out.println("Payment Information Required");
+        System.out.println("----------------------------");
+        String cardNumber;
+        while (true) {
+            System.out.print("Enter card number (16 digits): ");
+            cardNumber = userIn.nextLine().trim();
+            if (cardNumber.matches("\\d{16}")) break;
+            System.out.println("Invalid card number format.");
+        }
 
+        String expiry;
+        while (true) {
+            System.out.print("Enter expiry date (MM/YY): ");
+            expiry = userIn.nextLine().trim();
+            if (expiry.matches("(0[1-9]|1[0-2])/\\d{2}")) break;
+            System.out.println("Invalid expiry date format.");
+        }
+
+        String cvv;
+        while (true) {
+            System.out.print("Enter CVV (3 digits): ");
+            cvv = userIn.nextLine().trim();
+            if (cvv.matches("\\d{3}")) break;
+            System.out.println("Invalid CVV format.");
+        }
 
         StringBuilder cmd = new StringBuilder();
         cmd.append("BOOK|").append(chosenShowtimeId).append("|").append(seatCount);
         for (int i = 0; i < chosenSeats.size(); i++) {
             cmd.append("|").append(chosenSeats.get(i));
         }
+        cmd.append("|").append(cardNumber).append("|")
+                .append(expiry)
+                .append("|")
+                .append(cvv);
 
         serverOut.println(cmd.toString());
         response = serverIn.readLine();

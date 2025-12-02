@@ -389,7 +389,7 @@ public class ClientHandlerTest {
 
         makeAuthedUser("booker");
 
-        String[] parts = {"BOOK", "ST_0", "2", "1:1", "1:2"};
+        String[] parts = {"BOOK", "ST_0", "2", "1:1", "1:2", "1234567891011121", "02/27", "123"};
         invokeHandler("handleBookSeats", new Class<?>[]{String[].class}, (Object) parts);
 
         List<Reservation> allRes = db.getReservations();
@@ -414,7 +414,7 @@ public class ClientHandlerTest {
 
         makeAuthedUser("duper");
 
-        String[] parts = {"BOOK", "ST_0", "2", "1:1", "1:1"};
+        String[] parts = {"BOOK", "ST_0", "2", "1:1", "1:1", "1234567891011121", "02/27", "123"};
         invokeHandler("handleBookSeats", new Class<?>[]{String[].class}, (Object) parts);
 
         assertTrue(st.isSeatAvailable(0, 0), "Seat should not be booked on duplicate error");
@@ -429,7 +429,10 @@ public class ClientHandlerTest {
     private Reservation createReservationForUser(User u, Showtime st) {
         ArrayList<Seat> seats = new ArrayList<Seat>();
         seats.add(new Seat(0, 0, st.getBasePrice()));
-        return new Reservation(u, st, seats);
+        String cardNumber = "1234567891011121";
+        String expiry = "02/27";
+        String cvv = "123";
+        return new Reservation(u, st, seats, cardNumber, expiry, cvv);
     }
 
     @Test

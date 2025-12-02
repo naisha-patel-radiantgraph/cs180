@@ -51,7 +51,7 @@ public class ReservationTest {
 
         expectedPrice = seat1.getPrice() + seat2.getPrice();
 
-        reservation = new Reservation(testUser, testShowtime, seatsToBook);
+        reservation = new Reservation(testUser, testShowtime, seatsToBook, "1234567891011121", "02/27", "123");
     }
 
     @Test

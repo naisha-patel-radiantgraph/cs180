@@ -410,7 +410,7 @@ public class ClientHandler implements Runnable, IClientHandler {
             return;
         }
 
-        if (parts.length != 3 + seatCount) {
+        if (parts.length != 3 + seatCount + 3) {
             sendError(Protocol.ERROR_INVALID_FORMAT);
             return;
         }
@@ -423,7 +423,7 @@ public class ClientHandler implements Runnable, IClientHandler {
 
 
         List<int[]> seatPositions = new ArrayList<>();
-        for (int i = 3; i < parts.length; i++) {
+        for (int i = 3; i < 3 + seatCount; i++) {
             String[] rowCol = parts[i].split(Protocol.SEAT_DELIMITER);
             if (rowCol.length != 2) {
                 sendError("Invalid seat format (expected row:col)");
@@ -482,8 +482,11 @@ public class ClientHandler implements Runnable, IClientHandler {
                 Seat seat = new Seat(pos[0], pos[1], showtime.getDynamicPrice());
                 bookedSeats.add(seat);
             }
+            String cardNumber = parts[parts.length - 3];
+            String expiry = parts[parts.length - 2];
+            String cvv = parts[parts.length - 1];
 
-            Reservation reservation = new Reservation(currentUser, showtime, bookedSeats);
+            Reservation reservation = new Reservation (currentUser, showtime, bookedSeats, cardNumber, expiry, cvv);
 
             synchronized (db) {
                 db.addReservation(reservation);
