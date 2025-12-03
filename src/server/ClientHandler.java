@@ -32,6 +32,8 @@ public class ClientHandler implements Runnable, IClientHandler {
 
     private User currentUser = null;
     private boolean isAuthenticated = false;
+    private long lastActivityTime = System.currentTimeMillis();
+    private static final long INACTIVITY_TIMEOUT = 15 * 60 * 1000; // 15 minutes in milliseconds
 
     // Validation patterns
     private static final Pattern USERNAME_PATTERN = Pattern.compile("^[a-zA-Z0-9]{3,20}$");
@@ -59,8 +61,17 @@ public class ClientHandler implements Runnable, IClientHandler {
                     continue;
                 }
 
+                // Check for inactivity timeout
+                if (isAuthenticated && checkInactivityTimeout()) {
+                    sendError("Session expired due to inactivity. Please log in again.");
+                    handleLogout();
+                    continue;
+                }
+
                 try {
                     handleCommand(input);
+                    // Update last activity time after successful command
+                    lastActivityTime = System.currentTimeMillis();
                 } catch (Exception e) {
                     sendError("An error occurred: " + e.getMessage());
                     e.printStackTrace();
@@ -80,6 +91,15 @@ public class ClientHandler implements Runnable, IClientHandler {
     private void setupStreams() throws IOException {
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         out = new PrintWriter(socket.getOutputStream(), true);
+    }
+
+    /**
+     * Check if the session has been inactive for too long
+     * @return true if session has timed out, false otherwise
+     */
+    private boolean checkInactivityTimeout() {
+        long currentTime = System.currentTimeMillis();
+        return (currentTime - lastActivityTime) > INACTIVITY_TIMEOUT;
     }
 
     /**
@@ -143,6 +163,10 @@ public class ClientHandler implements Runnable, IClientHandler {
 
             case Protocol.LOGOUT:
                 handleLogout();
+                break;
+
+            case Protocol.DELETE_ACCOUNT:
+                handleDeleteAccount();
                 break;
 
             case Protocol.LIST_MOVIES:
@@ -212,6 +236,7 @@ public class ClientHandler implements Runnable, IClientHandler {
 
             this.currentUser = user;
             this.isAuthenticated = true;
+            this.lastActivityTime = System.currentTimeMillis(); // Reset activity timer on login
             sendSuccess("Welcome " + username + "!" + Protocol.DELIMITER + user.isAdmin());
         }
     }
@@ -268,6 +293,41 @@ public class ClientHandler implements Runnable, IClientHandler {
         this.currentUser = null;
         this.isAuthenticated = false;
         sendSuccess("Logged out successfully");
+    }
+
+    private void handleDeleteAccount() {
+        if (!isAuthenticated) {
+            sendError(Protocol.ERROR_AUTH_REQUIRED);
+            return;
+        }
+
+        String usernameToDelete = currentUser.getUsername();
+
+        synchronized (db) {
+            // Cancel all reservations for this user
+            List<Reservation> userReservations = new ArrayList<>(currentUser.getReservations());
+            for (Reservation res : userReservations) {
+                res.cancelAllSeats();
+                db.removeReservation(res.getBookingID());
+            }
+
+            // Remove the user from the database
+            db.removeUser(usernameToDelete);
+
+            try {
+                db.saveDatabase();
+            } catch (IOException e) {
+                e.printStackTrace();
+                sendError("Failed to delete account");
+                return;
+            }
+
+            // Log out the user
+            this.currentUser = null;
+            this.isAuthenticated = false;
+
+            sendSuccess("Account deleted successfully");
+        }
     }
 
 

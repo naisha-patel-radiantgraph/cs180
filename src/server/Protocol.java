@@ -13,6 +13,7 @@ public class Protocol {
     public static final String LOGIN = "LOGIN";
     public static final String REGISTER = "REGISTER";
     public static final String LOGOUT = "LOGOUT";
+    public static final String DELETE_ACCOUNT = "DELETE_ACCOUNT";
     public static final String LIST_MOVIES = "LIST_MOVIES";
     public static final String LIST_SHOWTIMES = "LIST_SHOWTIMES";
     public static final String VIEW_SEATS = "VIEW_SEATS";

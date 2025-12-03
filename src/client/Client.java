@@ -167,7 +167,8 @@ public class Client implements IClient{
             System.out.println("1. List Movies");
             System.out.println("2. Book Seats");
             System.out.println("3. My Bookings");
-            System.out.println("4. Logout");
+            System.out.println("4. Delete Account");
+            System.out.println("5. Logout");
             System.out.print("Choose: ");
             String choice = userIn.nextLine().trim();
 
@@ -182,6 +183,9 @@ public class Client implements IClient{
                     viewMyBookings();
                     break;
                 case "4":
+                    deleteAccount();
+                    break;
+                case "5":
                     logout();
                     break;
                 default:
@@ -202,7 +206,8 @@ public class Client implements IClient{
             System.out.println("4. Add Movie");
             System.out.println("5. Add Showtime");
             System.out.println("6. Promote User");
-            System.out.println("7. Logout");
+            System.out.println("7. Delete Account");
+            System.out.println("8. Logout");
             System.out.print("Choose: ");
             String choice = userIn.nextLine().trim();
 
@@ -226,6 +231,9 @@ public class Client implements IClient{
                     promoteUser();
                     break;
                 case "7":
+                    deleteAccount();
+                    break;
+                case "8":
                     logout();
                     break;
                 default:
@@ -646,6 +654,7 @@ public class Client implements IClient{
             System.out.println("\nBooking confirmed!");
             System.out.println("Booking ID: " + bookingId);
             System.out.println("Total cost: $" + totalCost);
+            System.out.println("\nNote: No refunds will be given.");
         } else {
             System.out.println("Error: " + (response != null ? response.replace("ERROR|", "") : "Unknown error"));
         }
@@ -852,6 +861,44 @@ public class Client implements IClient{
 
         if (response != null && response.startsWith("SUCCESS")) {
             System.out.println("User promoted to admin.");
+        } else {
+            System.out.println("Error: " + (response != null ? response.replace("ERROR|", "") : "Unknown error"));
+        }
+    }
+
+    private void deleteAccount() throws IOException {
+        System.out.println("\n=======================");
+        System.out.println("   DELETE ACCOUNT");
+        System.out.println("=======================");
+        System.out.println("WARNING: This action cannot be undone!");
+        System.out.println("All your bookings will be cancelled and your account will be permanently deleted.");
+        System.out.print("Are you sure you want to delete your account? (yes/no): ");
+
+        String confirmation = userIn.nextLine().trim().toLowerCase();
+
+        if (!confirmation.equals("yes")) {
+            System.out.println("Account deletion cancelled.");
+            return;
+        }
+
+        System.out.print("Please type your username '" + currentUsername + "' to confirm: ");
+        String usernameConfirmation = userIn.nextLine().trim();
+
+        if (!usernameConfirmation.equals(currentUsername)) {
+            System.out.println("Username does not match. Account deletion cancelled.");
+            return;
+        }
+
+        serverOut.println("DELETE_ACCOUNT");
+        String response = serverIn.readLine();
+
+        if (response != null && response.startsWith("SUCCESS")) {
+            System.out.println("\nYour account has been successfully deleted.");
+            System.out.println("All your bookings have been cancelled.");
+            System.out.println("Thank you for using our cinema booking system.");
+            isLoggedIn = false;
+            currentUsername = null;
+            isAdmin = false;
         } else {
             System.out.println("Error: " + (response != null ? response.replace("ERROR|", "") : "Unknown error"));
         }
