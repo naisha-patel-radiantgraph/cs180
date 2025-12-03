@@ -421,6 +421,13 @@ public class ClientHandler implements Runnable, IClientHandler {
             return;
         }
 
+        // *** Phase 3 addition to check if showtime has started ***
+        if (showtime.hasStarted()) {
+            sendError("Time to book seats has expired");
+            return;
+        }
+
+        // *** End of phase 3 addition ***
 
         List<int[]> seatPositions = new ArrayList<>();
         for (int i = 3; i < 3 + seatCount; i++) {

@@ -5,6 +5,7 @@ import movie.Movie;
 import seat.Seat;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -195,6 +196,9 @@ public class Showtime implements IShowtime, Serializable {
         return basePrice * (1 + ratio);   // simple linear scaling
     }
 
-
+    @Override
+    public boolean hasStarted() {
+        return LocalDateTime.now().isAfter(dateTime);
+    }
 
 }

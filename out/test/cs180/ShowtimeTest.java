@@ -140,4 +140,14 @@ class ShowtimeTest {
                 "Price should scale smoothly with occupancy (~83%)");
     }
 
+    @Test
+    void testHasStarted() {
+        Movie m =  exampleMovie();
+
+        Showtime pastShowtime = new Showtime(m, LocalDateTime.now().minusHours(1), 1, 1, 10.0, "Aud1");
+        assertTrue(pastShowtime.hasStarted(), "Should return true for past showtimes");
+
+        Showtime futureShowtime = new Showtime(m, LocalDateTime.now().plusHours(1), 1, 1, 10.0, "Aud1");
+        assertFalse(futureShowtime.hasStarted(), "Should return false for future showtimes");
+    }
 }

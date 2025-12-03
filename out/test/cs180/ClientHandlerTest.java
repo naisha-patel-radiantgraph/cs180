@@ -383,13 +383,13 @@ public class ClientHandlerTest {
         Movie m = new Movie("Oppenheimer", "Drama", "R", 180, null);
         db.addMovie(m);
         Showtime st = new Showtime(m,
-                LocalDateTime.of(2025, 7, 1, 18, 0),
+                LocalDateTime.of(2027, 7, 1, 18, 0),
                 3, 3, 15.0, "Aud4");
         db.addShowtime(st);
 
         makeAuthedUser("booker");
 
-        String[] parts = {"BOOK", "ST_0", "2", "1:1", "1:2"};
+        String[] parts = {"BOOK", "ST_0", "2", "1:1", "1:2", "1234567891011121", "02/27", "123"};
         invokeHandler("handleBookSeats", new Class<?>[]{String[].class}, (Object) parts);
 
         List<Reservation> allRes = db.getReservations();
@@ -408,13 +408,13 @@ public class ClientHandlerTest {
         Movie m = new Movie("Cars", "Family", "G", 100, null);
         db.addMovie(m);
         Showtime st = new Showtime(m,
-                LocalDateTime.of(2025, 5, 1, 12, 0),
+                LocalDateTime.of(2027, 5, 1, 12, 0),
                 2, 2, 8.0, "Aud5");
         db.addShowtime(st);
 
         makeAuthedUser("duper");
 
-        String[] parts = {"BOOK", "ST_0", "2", "1:1", "1:1"};
+        String[] parts = {"BOOK", "ST_0", "2", "1:1", "1:1", "1234567891011121", "02/27", "123"};
         invokeHandler("handleBookSeats", new Class<?>[]{String[].class}, (Object) parts);
 
         assertTrue(st.isSeatAvailable(0, 0), "Seat should not be booked on duplicate error");
@@ -429,7 +429,10 @@ public class ClientHandlerTest {
     private Reservation createReservationForUser(User u, Showtime st) {
         ArrayList<Seat> seats = new ArrayList<Seat>();
         seats.add(new Seat(0, 0, st.getBasePrice()));
-        return new Reservation(u, st, seats);
+        String cardNumber = "1234567891011121";
+        String expiry = "02/27";
+        String cvv = "123";
+        return new Reservation(u, st, seats, cardNumber, expiry, cvv);
     }
 
     @Test
@@ -569,5 +572,31 @@ public class ClientHandlerTest {
         assertTrue(lines[1].startsWith("BOOKING_DETAIL|" + r.getBookingID() + "|cust|AdminView"),
                 "Booking detail should include id, username and movie");
         assertEquals("END_LIST", lines[2]);
+    }
+
+    // *** PHASE 3 ADDITIONS
+
+    @Test
+    public void testHandleBookSeatsRejectsPastShowtime() throws Exception {
+        Movie m = new Movie("History Movie", "History", "G", 100, null);
+        db.addMovie(m);
+
+        Showtime st = new Showtime(m,
+                LocalDateTime.now().minusHours(2),
+                2, 2, 10.0, "AudOld");
+        db.addShowtime(st);
+
+        makeAuthedUser("lateUser");
+
+        String[] parts = {"BOOK", "ST_0", "1", "1:1", "1234567890123456", "12/30", "123"};
+
+        invokeHandler("handleBookSeats", new Class<?>[]{String[].class}, (Object) parts);
+
+        assertEquals(0, db.getReservations().size(), "No reservation should be created for past showtime");
+
+        String[] lines = outputLines();
+        assertTrue(lines.length > 0);
+
+        assertTrue(lines[0].contains("Time to book seats has expired"), "Expected error message regarding showtime");
     }
 }

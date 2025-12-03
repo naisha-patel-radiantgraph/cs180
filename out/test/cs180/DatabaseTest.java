@@ -51,7 +51,7 @@ public class DatabaseTest {
         bookedSeats.add(new Seat(0, 1, 10.0));
 
 
-        testReservation = new Reservation(testUser, testShowtime, bookedSeats);
+        testReservation = new Reservation(testUser, testShowtime, bookedSeats, "1234567891011121", "02/27", "123");
     }
 
     @AfterEach

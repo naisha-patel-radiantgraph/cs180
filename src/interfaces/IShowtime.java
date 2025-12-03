@@ -138,4 +138,6 @@ public interface IShowtime {
     Seat[][] getSeats();
 
     double getDynamicPrice();
+
+    boolean hasStarted();
 }

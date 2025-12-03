@@ -74,7 +74,7 @@ public class UserTest {
         ArrayList<seat.Seat> seats = new ArrayList<>();
         seats.add(seat);
 
-        Reservation r1 = new Reservation(regularUser, s, seats);
+        Reservation r1 = new Reservation(regularUser, s, seats, "1234567891011121", "02/27", "123");
         regularUser.addReservation(r1);
 
         assertEquals(1, regularUser.getReservations().size());
@@ -94,7 +94,7 @@ public class UserTest {
         ArrayList<seat.Seat> seats = new ArrayList<>();
         seats.add(seat);
 
-        Reservation r1 = new Reservation(regularUser, s, seats);
+        Reservation r1 = new Reservation(regularUser, s, seats, "1234567891011121", "02/27", "123");
         regularUser.addReservation(r1);
 
         assertEquals(1, regularUser.getReservations().size());
@@ -128,8 +128,8 @@ public class UserTest {
         ArrayList<seat.Seat> seats2 = new ArrayList<>();
         seats2.add(seat2);
 
-        Reservation r1 = new Reservation(regularUser, s1, seats1);
-        Reservation r2 = new Reservation(regularUser, s2, seats2);
+        Reservation r1 = new Reservation(regularUser, s1, seats1, "1234567891011121", "02/27", "123");
+        Reservation r2 = new Reservation(regularUser, s2, seats2, "1234567891011121", "02/27", "123");
 
         regularUser.addReservation(r1);
         regularUser.addReservation(r2);
@@ -181,7 +181,7 @@ public class UserTest {
         seat.Seat seat = new seat.Seat(1, 2, 12.5);
         ArrayList<seat.Seat> seats = new ArrayList<>();
         seats.add(seat);
-        Reservation r1 = new Reservation(regularUser, s, seats);
+        Reservation r1 = new Reservation(regularUser, s, seats, "1234567891011121", "02/27", "123");
         regularUser.addReservation(r1);
         assertTrue(regularUser.hasReservation(r1.getBookingID()), "User should have the reservation");
         assertFalse(regularUser.hasReservation("ID does not exist"), "User should not have a reservation ID");
